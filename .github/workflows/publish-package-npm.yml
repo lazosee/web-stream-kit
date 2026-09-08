@@ -10,14 +10,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to push version bump back to GitHub
-      id-token: write # Required for provenance
+      contents: write # Needed to create tags and GitHub Releases
+      id-token: write # Required for npm provenance
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # Required if pushing commits back
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -31,20 +30,42 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      #       Use if no git pre-commit hooks to bump version
-      #      - name: Patch version
-      #        run: npm version patch -m "chore(release) %s"
+      - name: Extract version and create Git tag
+        id: release_info
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+          # Fetch remote tags to check accurately
+          git fetch --tags
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping tag creation."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            git tag -a "$TAG" -m "chore(release): $TAG"
+            git push origin "$TAG"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build package
         run: npm run build
 
-      - name: Publish package
+      - name: Publish package to npm
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Push version bump
-        run: git push origin main --follow-tags
+      - name: Create GitHub Release
+        if: steps.release_info.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.release_info.outputs.tag }}"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
