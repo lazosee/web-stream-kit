@@ -31,8 +31,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Patch version
-        run: npm version patch -m "chore(release) %s"
+#      - name: Patch version
+#        run: npm version patch -m "chore(release) %s"
 
       - name: Install dependencies
         run: npm install
