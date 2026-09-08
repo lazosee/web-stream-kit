@@ -1,0 +1,75 @@
+{
+  "name": "web-stream-kit",
+  "version": "0.9.8",
+  "description": "Zero-dependency WHATWG stream transformers for all modern JavaScript runtimes.",
+  "keywords": [
+    "Web Standards",
+    "stream",
+    "WHATWG",
+    "sse",
+    "parse",
+    "json",
+    "batch",
+    "throttle"
+  ],
+  "homepage": "https://github.com/lazosee/web-stream-kit#readme",
+  "bugs": {
+    "url": "https://github.com/lazosee/web-stream-kit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lazosee/web-stream-kit.git"
+  },
+  "license": "MIT",
+  "author": "Lazaro Osee <oseelazaro@gmail.com> (https://github.com/lazosee)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./text": {
+      "import": {
+        "types": "./dist/text/delimiter.d.ts",
+        "default": "./dist/text/delimiter.js"
+      }
+    },
+    "./json": {
+      "import": {
+        "types": "./dist/json/ndjson.d.ts",
+        "default": "./dist/json/ndjson.js"
+      }
+    },
+    "./transform": {
+      "import": {
+        "types": "./dist/transform/batch.d.ts",
+        "default": "./dist/transform/batch.js"
+      }
+    },
+    "./utils": {
+      "import": {
+        "types": "./dist/utils/buffer.d.ts",
+        "default": "./dist/utils/buffer.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm && tsc",
+    "prepublishOnly": "npm run build",
+    "docs:readme": "typedoc --options typedoc.readme.json && node scripts/update-readme.mjs",
+    "docs:pages": "typedoc --options typedoc.html.json",
+    "docs": "npm run docs:readme && npm run docs:pages",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typedoc": "^0.28.20",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.0"
+  }
+}
