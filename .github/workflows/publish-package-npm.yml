@@ -31,9 +31,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-#       Use if no git pre-commit hooks to bump version
-#      - name: Patch version
-#        run: npm version patch -m "chore(release) %s"
+      #       Use if no git pre-commit hooks to bump version
+      #      - name: Patch version
+      #        run: npm version patch -m "chore(release) %s"
 
       - name: Install dependencies
         run: npm install
