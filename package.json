@@ -1,6 +1,6 @@
 {
   "name": "web-stream-kit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Zero-dependency WHATWG stream transformers for all modern JavaScript runtimes.",
   "keywords": [
     "web-standards",
